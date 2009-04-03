@@ -1,0 +1,28 @@
+urxvt*termName: rxvt
+urxvt*font:     xft:Terminus:pixelsize=14
+urxvt*boldFont: xft:Terminus:pixelsize=14
+
+urxvt*urlLauncher:      firefox
+urxvt*foreground:       snow
+urxvt*background:       black
+URxvt*matcher.button:   2
+URxvt*perl-ext-common:  default,matcher
+URxvt*colorUL:          #86a2be
+
+! borderless and no scrollbar
+URxvt*scrollBar_right:  false
+URxvt*scrollBar:        false
+!URxvt*borderLess:       true
+
+! the transparency stuff
+!urxvt*depth:              32
+!URxvt*transparent: true
+!URxvt*inheritPixmap: true
+!URxvt*tintColor: white
+!URxvt*shading: 30
+
+urxvt*fading:     20
+urxvt*fadeColor:  white
+
+urxvt*urgentOnBell: true
+urxvt*visualBell: false
