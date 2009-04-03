@@ -7,15 +7,17 @@ font          = sans 8
 bg_normal     = #222222
 bg_focus      = #535d6c
 bg_urgent     = #ff0000
+bg_minimize   = #444444
 
 fg_normal     = #aaaaaa
 fg_focus      = #ffffff
 fg_urgent     = #ffffff
+fg_minimize  =  #ffffff
 
 border_width  = 1
 border_normal = #000000
-border_focus  = #ff3300
-border_marked = #ff00ff
+border_focus  = #535d6c
+border_marked = #91231c
 
 # There are another variables sets
 # overriding the default one when
@@ -48,16 +50,14 @@ titlebar_close_button_normal = /usr/share/awesome/themes/default/titlebar/close.
 titlebar_close_button_focus = /usr/share/awesome/themes/default/titlebar/closer.png
 
 # You can use your own command to set your wallpaper
-wallpaper_cmd = awsetbg /home/chris/Arch_Linux_Darkwave_by_BalanceST.jpg
+wallpaper_cmd = awsetbg /usr/share/awesome/themes/default/background.png
 
 # You can use your own layout icons like this:
-layout_dwindle = /usr/share/awesome/themes/default/layouts/dwindlew.png
 layout_fairh = /usr/share/awesome/themes/default/layouts/fairhw.png
 layout_fairv = /usr/share/awesome/themes/default/layouts/fairvw.png
 layout_floating = /usr/share/awesome/themes/default/layouts/floatingw.png
 layout_magnifier = /usr/share/awesome/themes/default/layouts/magnifierw.png
 layout_max = /usr/share/awesome/themes/default/layouts/maxw.png
-layout_spiral = /usr/share/awesome/themes/default/layouts/spiralw.png
 layout_tilebottom = /usr/share/awesome/themes/default/layouts/tilebottomw.png
 layout_tileleft = /usr/share/awesome/themes/default/layouts/tileleftw.png
 layout_tile = /usr/share/awesome/themes/default/layouts/tilew.png
