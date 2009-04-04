@@ -8,7 +8,7 @@ require("naughty")
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 -- The default is a dark theme
-theme_path = "/usr/share/awesome/themes/default/theme"
+theme_path = os.getenv("HOME").."/.config/awesome/theme/theme"
 -- Uncommment this for a lighter theme
 -- theme_path = "/usr/share/awesome/themes/sky/theme"
 
@@ -16,8 +16,8 @@ theme_path = "/usr/share/awesome/themes/default/theme"
 beautiful.init(theme_path)
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
-editor = os.getenv("EDITOR") or "nano"
+terminal = "myurxvt.sh"
+editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -88,9 +88,9 @@ end
 
 -- {{{ Wibox
 -- Create a textbox widget
-mytextbox = widget({ type = "textbox", align = "right" })
+--mytextbox = widget({ type = "textbox", align = "right" })
 -- Set the default text in textbox
-mytextbox.text = "<b><small> " .. AWESOME_RELEASE .. " </small></b>"
+--mytextbox.text = "<b><small> " .. AWESOME_RELEASE .. " </small></b>"
 
 -- Create a laucher widget and a main menu
 myawesomemenu = {
@@ -429,7 +429,126 @@ awful.hooks.arrange.register(function (screen)
 end)
 
 -- Hook called every minute
-awful.hooks.timer.register(60, function ()
-    mytextbox.text = os.date(" %a %b %d, %H:%M ")
-end)
+--awful.hooks.timer.register(60, function ()
+--    mytextbox.text = os.date(" %a %b %d, %H:%M ")
+--end)
 -- }}}
+
+--- MY STUFF
+tags[1][1].name = 'im'
+tags[1][2].name = 'ff'
+tags[1][8].name = 'mpl'
+tags[1][9].name = 'wow'
+
+key({ modkey }, "p", function () awful.util.spawn('mydmenu.rb') end):add()
+key({ "Mod1", "Control" }, "l", function ()
+  awful.util.spawn('xscreensaver-command -lock') end):add()
+key({ modkey }, "p", function ()
+  awful.util.spawn('mydmenu.rb') end):add()
+key({ modkey }, "`", function ()
+  local screen = mouse.screen
+  if tags[screen][9] then
+    awful.tag.viewonly(tags[screen][9])
+  end
+end):add()
+
+function table_contains(table, value)
+  for k,v in pairs(table) do
+    if v == value then
+      return true
+    end
+  end
+  return false
+end
+key({ modkey }, [[\]], function ()
+  awful.util.spawn('xmodmap ~/.Xmodmap')
+  awful.util.spawn('numlockx')
+end):add()
+key({ modkey, "Control" }, [[\]], function ()
+  local ignores = {}
+  for i,v in ipairs(client.focus:tags()) do
+    table.insert(ignores, v.name)
+  end
+  if client.focus then
+    for s = 1, screen.count() do
+      for t,v in ipairs(tags[s]) do
+        if tags[s][t] and not table_contains(ignores, tags[s][t].name) then
+          awful.client.toggletag(tags[s][t])
+        end
+      end
+    end
+  end
+end):add()
+
+require("wicked")
+datewidget = widget({
+  type = 'textbox',
+  name = 'datewidget',
+  align = "right"
+})
+
+wicked.register(datewidget, wicked.widgets.date,
+'<span color="red">%a %b %d</span>, <span color="green">%I:%M %p</span>')
+for s = 1, screen.count() do
+  mywibox[s].widgets[5] = datewidget
+end
+
+awful.hooks.tags.register(function (s)
+  mypromptbox[s].text = 'Tags triggered'
+end)
+awful.util.spawn('xscreensaver -nosplash')
+awful.util.spawn('amarok')
+awful.util.spawn('synergys')
+awful.util.spawn('volwheel')
+awful.util.spawn('xmodmap ~/.Xmodmap')
+awful.util.spawn('numlockx')
+awful.util.spawn('nm-applet')
+
+-- calendar for date widget
+local calendar = nil
+local offset = 0
+
+function remove_calendar()
+    if calendar ~= nil then
+        naughty.destroy(calendar)
+        calendar = nil
+        offset = 0
+    end
+end
+
+function add_calendar(inc_offset)
+    local save_offset = offset
+    remove_calendar()
+    offset = save_offset + inc_offset
+    local datespec = os.date("*t")
+    datespec = datespec.year * 12 + datespec.month - 1 + offset
+    datespec = (datespec % 12 + 1) .. " " .. math.floor(datespec / 12)
+    local cal = awful.util.pread("cal " .. datespec)
+    cal = string.gsub(cal, "^%s*(.-)%s*$", "%1")
+    calendar = naughty.notify({
+        text = string.format('<span font_desc="%s">%s</span>', "monospace", cal),
+        timeout = 0, hover_timeout = 0.5,
+        width = 165,
+    })
+end
+
+-- I prefer click to toggle calendar
+-- change clockbox for your clock widget (e.g. mytextbox)
+-- datewidget.mouse_enter = function()
+--     add_calendar(0)
+-- end
+
+datewidget.mouse_leave = remove_calendar
+
+datewidget:buttons({
+    button({ }, 1, function()
+        add_calendar(0)
+    end),
+    button({ }, 4, function()
+        add_calendar(-1)
+    end),
+    button({ }, 5, function()
+        add_calendar(1)
+    end),
+})
+-- }}
