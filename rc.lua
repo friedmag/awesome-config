@@ -130,7 +130,7 @@ mytasklist.buttons = { button({ }, 1, function (c)
                                           client.focus = c
                                           c:raise()
                                       end),
-                       button({ }, 3, function () if instance then instance:hide() end instance = awful.menu.clients({ width=250 }) end),
+                       button({ }, 3, function () if instance then instance:hide() instance = nil else instance = awful.menu.clients({ width=250 }) end end),
                        button({ }, 4, function ()
                                           awful.client.focus.byidx(1)
                                           if client.focus then client.focus:raise() end
@@ -197,6 +197,7 @@ globalkeys =
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
+    key({ modkey,           }, "w", function () mymainmenu:show(true)        end),
 
     -- Layout manipulation
     key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1) end),
@@ -231,7 +232,7 @@ globalkeys =
         function ()
             awful.prompt.run({ prompt = "Run: " },
             mypromptbox[mouse.screen],
-            awful.util.spawn, awful.completion.bash,
+            awful.util.spawn, awful.completion.shell,
             awful.util.getdir("cache") .. "/history")
         end),
 
@@ -239,7 +240,7 @@ globalkeys =
         function ()
             awful.prompt.run({ prompt = "Run Lua code: " },
             mypromptbox[mouse.screen],
-            awful.util.eval, awful.prompt.bash,
+            awful.util.eval, nil,
             awful.util.getdir("cache") .. "/history_eval")
         end),
 }
@@ -298,20 +299,18 @@ for i = 1, keynumber do
                     awful.client.toggletag(tags[client.focus.screen][i])
                 end
             end))
+    table.insert(globalkeys,
+        key({ modkey, "Shift" }, "F" .. i,
+            function ()
+                local screen = mouse.screen
+                if tags[screen][i] then
+                    for k, c in pairs(awful.client.getmarked()) do
+                        awful.client.movetotag(tags[screen][i], c)
+                    end
+                end
+            end))
 end
 
-
-for i = 1, keynumber do
-    table.insert(globalkeys, key({ modkey, "Shift" }, "F" .. i,
-                 function ()
-                     local screen = mouse.screen
-                     if tags[screen][i] then
-                         for k, c in pairs(awful.client.getmarked()) do
-                             awful.client.movetotag(tags[screen][i], c)
-                         end
-                     end
-                 end))
-end
 
 -- Set keys
 root.keys(globalkeys)
@@ -440,17 +439,23 @@ tags[1][2].name = 'ff'
 tags[1][8].name = 'mpl'
 tags[1][9].name = 'wow'
 
-key({ modkey }, "p", function () awful.util.spawn('mydmenu.rb') end):add()
-key({ "Mod1", "Control" }, "l", function ()
-  awful.util.spawn('xscreensaver-command -lock') end):add()
-key({ modkey }, "p", function ()
-  awful.util.spawn('mydmenu.rb') end):add()
-key({ modkey }, "`", function ()
+addkey = function(umod, ukey, ufunc)
+  local keys = root.keys()
+  table.insert(keys, key(umod, ukey, ufunc))
+  root.keys(keys)
+end
+
+addkey({ modkey }, "p", function () awful.util.spawn('mydmenu.rb') end)
+addkey({ "Mod1", "Control" }, "l", function ()
+  awful.util.spawn('xscreensaver-command -lock') end)
+addkey({ modkey }, "p", function ()
+  awful.util.spawn('mydmenu.rb') end)
+addkey({ modkey }, "`", function ()
   local screen = mouse.screen
   if tags[screen][9] then
     awful.tag.viewonly(tags[screen][9])
   end
-end):add()
+end)
 
 function table_contains(table, value)
   for k,v in pairs(table) do
@@ -460,11 +465,11 @@ function table_contains(table, value)
   end
   return false
 end
-key({ modkey }, [[\]], function ()
+addkey({ modkey }, [[\]], function ()
   awful.util.spawn('xmodmap ~/.Xmodmap')
   awful.util.spawn('numlockx')
-end):add()
-key({ modkey, "Control" }, [[\]], function ()
+end)
+addkey({ modkey, "Control" }, [[\]], function ()
   local ignores = {}
   for i,v in ipairs(client.focus:tags()) do
     table.insert(ignores, v.name)
@@ -478,7 +483,7 @@ key({ modkey, "Control" }, [[\]], function ()
       end
     end
   end
-end):add()
+end)
 
 require("wicked")
 datewidget = widget({
@@ -551,4 +556,3 @@ datewidget:buttons({
         add_calendar(1)
     end),
 })
--- }}
