@@ -1,6 +1,6 @@
 urxvt*termName: rxvt
-urxvt*font:     xft:Terminus:pixelsize=14
-urxvt*boldFont: xft:Terminus:pixelsize=14
+urxvt*font:     xft:Terminus:pixelsize=12
+urxvt*boldFont: xft:Terminus:pixelsize=12
 
 urxvt*urlLauncher:      firefox
 urxvt*foreground:       snow
@@ -26,3 +26,4 @@ urxvt*fadeColor:  white
 
 urxvt*urgentOnBell: true
 urxvt*visualBell: false
+urxvt*print-pipe:
