@@ -448,14 +448,7 @@ end
 addkey({ modkey }, "p", function () awful.util.spawn('mydmenu.rb') end)
 addkey({ "Mod1", "Control" }, "l", function ()
   awful.util.spawn('xscreensaver-command -lock') end)
-addkey({ modkey }, "p", function ()
-  awful.util.spawn('mydmenu.rb') end)
-addkey({ modkey }, "`", function ()
-  local screen = mouse.screen
-  if tags[screen][9] then
-    awful.tag.viewonly(tags[screen][9])
-  end
-end)
+addkey({ modkey }, "`", awful.tag.history.restore)
 
 function table_contains(table, value)
   for k,v in pairs(table) do
