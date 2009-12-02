@@ -218,7 +218,8 @@ globalkeys = awful.util.table.join(
               end),
 
     -- Mine
-    awful.key({ modkey }, "p", function () awful.util.spawn("mydmenu.rb") end)
+    awful.key({ modkey }, "p", function () awful.util.spawn("mydmenu.rb") end),
+    awful.key({ modkey }, "`", awful.tag.history.restore)
 )
 
 clientkeys = awful.util.table.join(
